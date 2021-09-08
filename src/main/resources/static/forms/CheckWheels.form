@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 2,
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.4.1"
+  },
+  "components": [
+    {
+      "text": "# Check Wheels",
+      "type": "text",
+      "id": "Field_03n5eie"
+    },
+    {
+      "key": "wheelCondition",
+      "label": "Wheel Condition",
+      "type": "number",
+      "id": "Field_0wzryub",
+      "validate": {
+        "min": 1,
+        "max": 100,
+        "required": true
+      },
+      "description": "What is the % Condition of the wheels"
+    },
+    {
+      "values": [
+        {
+          "label": "Replace Wheels",
+          "value": "replaceWheels"
+        },
+        {
+          "label": "Leave Wheels",
+          "value": "leaveWheels"
+        }
+      ],
+      "key": "wheelsAction",
+      "label": "Action To Take",
+      "type": "select",
+      "id": "Field_0i4ops1",
+      "validate": {
+        "required": true
+      },
+      "description": "What would you like to do?"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1k3y03b"
+}

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.4.1"
+  },
+  "components": [
+    {
+      "text": "# Check If repairs are needed",
+      "type": "text",
+      "id": "Field_03n5eie"
+    },
+    {
+      "key": "numberOfRepairsNeeded",
+      "label": "Repairs Needed",
+      "type": "textfield",
+      "id": "Field_0jloe1h",
+      "description": "The number of repairs needed",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "values": [
+        {
+          "label": "Make Repairs",
+          "value": "makeRepairs"
+        },
+        {
+          "label": "Keep Going",
+          "value": "keepGoing"
+        }
+      ],
+      "key": "repairsAction",
+      "label": "Action To Take",
+      "type": "select",
+      "id": "Field_0m5sqyo",
+      "description": "What do you want to do?",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default",
+  "id": "Form_1k3y03b"
+}

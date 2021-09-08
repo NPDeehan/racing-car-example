@@ -1,0 +1,28 @@
+package com.example.workflow;
+
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.feel.syntaxtree.In;
+
+import javax.inject.Named;
+import java.util.Map;
+
+@Named("NextLap")
+public class RunNextLapDelegate implements JavaDelegate {
+    @Override
+    public void execute(DelegateExecution delegateExecution) throws Exception {
+
+        Map<String, Object> vars = delegateExecution.getVariables();
+        Integer totalLaps = (Integer) vars.get("totalLaps");
+        Integer lapsCompleted = (Integer) vars.get("lapsCompleted");
+        vars.put("lapsCompleted", lapsCompleted+1);
+
+        System.out.println("Current Laps Completed: " +lapsCompleted);
+        System.out.println("Total Race Laps: " +totalLaps);
+
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("NextLap")
+                .setVariables(vars)
+                .processInstanceBusinessKey(delegateExecution.getBusinessKey())
+                .correlate();
+    }
+}
