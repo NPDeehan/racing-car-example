@@ -5,7 +5,7 @@
       <bpmn:extensionElements>
         <camunda:formData businessKey="RaceID">
           <camunda:formField id="RaceID" label="This should be a unique value for this race" type="string" defaultValue="Niall-1" />
-          <camunda:formField id="totalLaps" label="How many laps for this race?" type="long" />
+          <camunda:formField id="totalLaps" label="How many laps for this race?" type="long" defaultValue="10" />
           <camunda:formField id="driverName" label="What is the Name of the Driver?" type="string" defaultValue="Zagreus" />
         </camunda:formData>
       </bpmn:extensionElements>
@@ -81,7 +81,9 @@
       <bpmn:outgoing>Flow_0wm3vj9</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0wm3vj9" sourceRef="Gateway_1446r5z" targetRef="Gateway_0gpsw82" />
-    <bpmn:sequenceFlow id="Flow_0l7c2go" sourceRef="Activity_00q7jaz" targetRef="Gateway_1446r5z" />
+    <bpmn:sequenceFlow id="Flow_0l7c2go" sourceRef="Activity_00q7jaz" targetRef="Gateway_1446r5z">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="JavaScript">execution.setVariable('numberOfRepairsNeeded', 0)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_1093l12" name="Drive Lap" camunda:delegateExpression="#{DriveLap}">
       <bpmn:incoming>Flow_04vkkwf</bpmn:incoming>
       <bpmn:incoming>Flow_18pl6rc</bpmn:incoming>
@@ -91,12 +93,7 @@
       <bpmn:incoming>Flow_0rvm603</bpmn:incoming>
       <bpmn:outgoing>Flow_0yl06id</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1hox2wa" name="Replace tires" camunda:assignee="#{userName}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="wheelCondition" label="What is the Current wheel condition now?" type="long" defaultValue="100" />
-        </camunda:formData>
-      </bpmn:extensionElements>
+    <bpmn:userTask id="Activity_1hox2wa" name="Replace tires" camunda:formKey="camunda-forms:/forms/ChangeWheels.form" camunda:assignee="#{userName}">
       <bpmn:incoming>Flow_0htf2m5</bpmn:incoming>
       <bpmn:outgoing>Flow_07p59uv</bpmn:outgoing>
     </bpmn:userTask>

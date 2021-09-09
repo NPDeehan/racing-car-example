@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "exporter": {
+    "name": "form-js (https://demo.bpmn.io)",
+    "version": "0.4.1"
+  },
+  "components": [
+    {
+      "text": "# Replace Wheels",
+      "type": "text",
+      "id": "Field_03n5eie"
+    },
+    {
+      "key": "wheelCondition",
+      "label": "New Wheel Condition",
+      "type": "number",
+      "id": "Field_0wzryub",
+      "validate": {
+        "min": 1,
+        "max": 100,
+        "required": true
+      },
+      "description": "Enter the new % Condition of the wheels"
+    }
+  ],
+  "type": "default",
+  "id": "Form_1k3y03b"
+}

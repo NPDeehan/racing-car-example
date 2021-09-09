@@ -10,12 +10,12 @@ const config = { baseUrl: "http://localhost:8080/engine-rest", use: logger };
 const client = new Client(config);
 
 // susbscribe to the topic: 'MakeRepair'
-client.subscribe("MakeRepair", async function({ task, taskService }) {
-  // Put your business logic
-  const numberOfRepairsNeeded = task.variables.get("numberOfRepairsNeeded");
-  await new Promise(resolve => setTimeout(resolve, 5000));
-  const processVariables = new Variables();
-  processVariables.set("numberOfRepairsNeeded", numberOfRepairsNeeded-1);
-  // complete the task
-  await taskService.complete(task, processVariables);
-});
+client.subscribe("MakeRepair", ({ task, taskService }) => 
+    setTimeout(() => taskService.complete(task), getRandomInt(5000, 10000))
+)
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

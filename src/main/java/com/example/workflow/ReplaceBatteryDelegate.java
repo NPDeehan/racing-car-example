@@ -17,7 +17,7 @@ public class ReplaceBatteryDelegate implements JavaDelegate {
 
         Thread.sleep((long)(Math.random() * 1000));
 
-        delegateExecution.setVariable("batteryPower", 100L);
+        delegateExecution.setVariable("batteryPower", 100);
 
     }
 }

@@ -13,11 +13,12 @@ public class RunNextLapDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
 
-        String messageRef = delegateExecution.getBpmnModelElementInstance().getAttributeValue("messageRef");
-        System.out.println("Message Ref: "+  messageRef);
-        String messageName =
-                delegateExecution.getBpmnModelInstance().getModelElementById(messageRef).getAttributeValue(
-                "name");
+//        String messageRef = delegateExecution.getBpmnModelElementInstance().get
+//        System.out.println("Message Ref: "+  messageRef);
+//        String messageName =
+//                delegateExecution.getBpmnModelInstance().getModelElementById(messageRef).getAttributeValue(
+//                "name");
+//        System.out.println("Message Name: "+  messageName);
 
 
         Map<String, Object> vars = delegateExecution.getVariables();
@@ -28,7 +29,7 @@ public class RunNextLapDelegate implements JavaDelegate {
         System.out.println("Current Laps Completed: " +lapsCompleted);
         System.out.println("Total Race Laps: " +totalLaps);
 
-        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
+        delegateExecution.getProcessEngineServices().getRuntimeService().createMessageCorrelation("NextLap")
                 .setVariables(vars)
                 .processInstanceBusinessKey(delegateExecution.getBusinessKey())
                 .correlate();

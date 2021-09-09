@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
-  <bpmn:process id="racing-team-process-optimized" name="Racing Team Process OPTIMIZED" isExecutable="true">
+  <bpmn:process id="racing-team-process" name="Racing Team Process" isExecutable="false">
     <bpmn:startEvent id="StartEvent_1" camunda:initiator="userName">
       <bpmn:extensionElements>
         <camunda:formData businessKey="RaceID">
           <camunda:formField id="RaceID" label="This should be a unique value for this race" type="string" defaultValue="Niall-1" />
-          <camunda:formField id="totalLaps" label="How many laps for this race?" type="long" />
+          <camunda:formField id="totalLaps" label="How many laps for this race?" type="long" defaultValue="10" />
           <camunda:formField id="driverName" label="What is the Name of the Driver?" type="string" defaultValue="Zagreus" />
         </camunda:formData>
       </bpmn:extensionElements>
@@ -72,12 +72,7 @@
       <bpmn:incoming>Flow_0ubiyx3</bpmn:incoming>
       <bpmn:outgoing>Flow_0yl06id</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="Activity_1hox2wa" name="Replace tires" camunda:assignee="#{userName}">
-      <bpmn:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="wheelCondition" label="What is the Current wheel condition now?" type="long" defaultValue="100" />
-        </camunda:formData>
-      </bpmn:extensionElements>
+    <bpmn:userTask id="Activity_1hox2wa" name="Replace tires" camunda:formKey="camunda-forms:/forms/ChangeWheels.form" camunda:assignee="#{userName}">
       <bpmn:incoming>Flow_0htf2m5</bpmn:incoming>
       <bpmn:incoming>Flow_1d36pjq</bpmn:incoming>
       <bpmn:outgoing>Flow_07p59uv</bpmn:outgoing>
@@ -128,12 +123,13 @@
     <bpmn:sequenceFlow id="Flow_0ubiyx3" sourceRef="Gateway_160zep8" targetRef="Activity_02ejk38">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{wheelCondition &lt; 50 and wheelCondition &gt; 20}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:inclusiveGateway id="Gateway_160zep8">
+    <bpmn:inclusiveGateway id="Gateway_160zep8" default="Flow_0xggmkc">
       <bpmn:incoming>Flow_0rvm603</bpmn:incoming>
       <bpmn:outgoing>Flow_0ubiyx3</bpmn:outgoing>
       <bpmn:outgoing>Flow_0w58jzc</bpmn:outgoing>
       <bpmn:outgoing>Flow_1c6c1tc</bpmn:outgoing>
       <bpmn:outgoing>Flow_1d36pjq</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0xggmkc</bpmn:outgoing>
     </bpmn:inclusiveGateway>
     <bpmn:serviceTask id="Activity_14igyj3" name="replace battery" camunda:delegateExpression="#{ReplaceBattery}">
       <bpmn:incoming>Flow_0w58jzc</bpmn:incoming>
@@ -166,7 +162,13 @@
       <bpmn:incoming>Flow_1bit673</bpmn:incoming>
       <bpmn:outgoing>Flow_0e83zfn</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="Flow_15p4bh1" sourceRef="Activity_052f7bv" targetRef="Gateway_1cf54i4" />
+    <bpmn:sequenceFlow id="Flow_15p4bh1" sourceRef="Activity_052f7bv" targetRef="Gateway_1cf54i4">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('numberOfRepairsNeeded', 0)</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_1bit673" name="No" sourceRef="Gateway_0po6cv2" targetRef="Gateway_1cf54i4" />
     <bpmn:sequenceFlow id="Flow_1d36pjq" sourceRef="Gateway_160zep8" targetRef="Activity_1hox2wa">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{wheelCondition &lt;= 20}</bpmn:conditionExpression>
@@ -178,13 +180,20 @@
       <bpmn:incoming>Flow_0n5k0e5</bpmn:incoming>
       <bpmn:incoming>Flow_0e83zfn</bpmn:incoming>
       <bpmn:incoming>Flow_0ujrr2m</bpmn:incoming>
+      <bpmn:incoming>Flow_1u705ny</bpmn:incoming>
       <bpmn:outgoing>Flow_0ntaxzg</bpmn:outgoing>
     </bpmn:inclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0ujrr2m" sourceRef="Activity_14igyj3" targetRef="Gateway_0uwqhgq" />
+    <bpmn:sequenceFlow id="Flow_0xggmkc" name="Everything is fine!" sourceRef="Gateway_160zep8" targetRef="Event_0agus6s" />
+    <bpmn:intermediateThrowEvent id="Event_0agus6s" name="Skipped the Pit stop">
+      <bpmn:incoming>Flow_0xggmkc</bpmn:incoming>
+      <bpmn:outgoing>Flow_1u705ny</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="Flow_1u705ny" sourceRef="Event_0agus6s" targetRef="Gateway_0uwqhgq" />
   </bpmn:process>
-  <bpmn:message id="Message_18uck5e" name="NextLapOpt" />
+  <bpmn:message id="Message_18uck5e" name="NextLap" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="racing-team-process-optimized">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="racing-team-process">
       <bpmndi:BPMNEdge id="Flow_07p59uv_di" bpmnElement="Flow_07p59uv">
         <di:waypoint x="1130" y="430" />
         <di:waypoint x="1190" y="430" />
@@ -242,10 +251,10 @@
       <bpmndi:BPMNEdge id="Flow_1c6c1tc_di" bpmnElement="Flow_1c6c1tc">
         <di:waypoint x="700" y="582" />
         <di:waypoint x="700" y="870" />
-        <di:waypoint x="820" y="870" />
+        <di:waypoint x="800" y="870" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0hl2jjo_di" bpmnElement="Flow_0hl2jjo">
-        <di:waypoint x="920" y="870" />
+        <di:waypoint x="900" y="870" />
         <di:waypoint x="975" y="870" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ofvy89_di" bpmnElement="Flow_0ofvy89">
@@ -260,17 +269,17 @@
         <di:waypoint x="1275" y="870" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1bit673_di" bpmnElement="Flow_1bit673">
-        <di:waypoint x="1000" y="845" />
-        <di:waypoint x="1000" y="770" />
-        <di:waypoint x="1300" y="770" />
-        <di:waypoint x="1300" y="845" />
+        <di:waypoint x="1000" y="895" />
+        <di:waypoint x="1000" y="980" />
+        <di:waypoint x="1300" y="980" />
+        <di:waypoint x="1300" y="895" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1143" y="752" width="15" height="14" />
+          <dc:Bounds x="1143" y="962" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d36pjq_di" bpmnElement="Flow_1d36pjq">
-        <di:waypoint x="710" y="542" />
-        <di:waypoint x="710" y="410" />
+        <di:waypoint x="720" y="552" />
+        <di:waypoint x="720" y="410" />
         <di:waypoint x="1030" y="410" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1ra209u_di" bpmnElement="Flow_1ra209u" bioc:stroke="#000" bioc:fill="#fff">
@@ -310,6 +319,19 @@
         <di:waypoint x="1330" y="710" />
         <di:waypoint x="1330" y="572" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xggmkc_di" bpmnElement="Flow_0xggmkc">
+        <di:waypoint x="710" y="542" />
+        <di:waypoint x="710" y="330" />
+        <di:waypoint x="1007" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="809" y="312" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1u705ny_di" bpmnElement="Flow_1u705ny">
+        <di:waypoint x="1043" y="330" />
+        <di:waypoint x="1350" y="330" />
+        <di:waypoint x="1350" y="542" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="549" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -340,16 +362,13 @@
       <bpmndi:BPMNShape id="Activity_14igyj3_di" bpmnElement="Activity_14igyj3">
         <dc:Bounds x="800" y="670" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0zfrso9_di" bpmnElement="Activity_1ivrmj7">
-        <dc:Bounds x="820" y="830" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_052f7bv_di" bpmnElement="Activity_052f7bv">
         <dc:Bounds x="1100" y="830" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0po6cv2_di" bpmnElement="Gateway_0po6cv2" isMarkerVisible="true">
         <dc:Bounds x="975" y="845" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="959" y="902" width="83" height="14" />
+          <dc:Bounds x="958" y="821" width="83" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1cf54i4_di" bpmnElement="Gateway_1cf54i4" isMarkerVisible="true">
@@ -387,6 +406,15 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0gr0hax_di" bpmnElement="Gateway_0uwqhgq">
         <dc:Bounds x="1325" y="542" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0agus6s_di" bpmnElement="Event_0agus6s">
+        <dc:Bounds x="1007" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="988" y="355" width="75" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zfrso9_di" bpmnElement="Activity_1ivrmj7">
+        <dc:Bounds x="800" y="830" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_00uc3r7_di" bpmnElement="Activity_0qo1rul" isExpanded="true">
         <dc:Bounds x="410" y="80" width="350" height="200" />
