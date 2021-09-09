@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
-  <bpmn:process id="racing-team-process" name="Racing Team Process" isExecutable="false">
+  <bpmn:process id="racing-team-process" name="Racing Team Process" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" camunda:initiator="userName">
       <bpmn:extensionElements>
         <camunda:formData businessKey="RaceID">
@@ -20,7 +20,7 @@
       <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
       <bpmn:outgoing>Flow_18pl6rc</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="EndEvent_0x6ir2l" name="next lap">
+    <bpmn:endEvent id="EndEvent_0x6ir2l" name="next lap" camunda:asyncBefore="true">
       <bpmn:incoming>Flow_1ra209u</bpmn:incoming>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1sq4on0" messageRef="Message_18uck5e" camunda:delegateExpression="#{NextLap}" />
     </bpmn:endEvent>
@@ -63,7 +63,7 @@
       <bpmn:outgoing>Flow_0n5k0e5</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_07p59uv" sourceRef="Activity_1hox2wa" targetRef="Gateway_0efl7qb" />
-    <bpmn:serviceTask id="Activity_1093l12" name="Drive Lap" camunda:delegateExpression="#{DriveLap}">
+    <bpmn:serviceTask id="Activity_1093l12" name="Drive Lap" camunda:asyncBefore="true" camunda:delegateExpression="#{DriveLap}">
       <bpmn:incoming>Flow_04vkkwf</bpmn:incoming>
       <bpmn:incoming>Flow_18pl6rc</bpmn:incoming>
       <bpmn:outgoing>Flow_1ly7eyl</bpmn:outgoing>

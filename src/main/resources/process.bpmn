@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0">
-  <bpmn:process id="racing-team-process" name="Racing Team Process" isExecutable="true">
+  <bpmn:process id="racing-team-process" name="Racing Team Process" isExecutable="false">
     <bpmn:startEvent id="StartEvent_1" camunda:initiator="userName">
       <bpmn:extensionElements>
         <camunda:formData businessKey="RaceID">
@@ -82,7 +82,11 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0wm3vj9" sourceRef="Gateway_1446r5z" targetRef="Gateway_0gpsw82" />
     <bpmn:sequenceFlow id="Flow_0l7c2go" sourceRef="Activity_00q7jaz" targetRef="Gateway_1446r5z">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="JavaScript">execution.setVariable('numberOfRepairsNeeded', 0)</bpmn:conditionExpression>
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="JavaScript">execution.setVariable('numberOfRepairsNeeded', 0)</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
     </bpmn:sequenceFlow>
     <bpmn:serviceTask id="Activity_1093l12" name="Drive Lap" camunda:delegateExpression="#{DriveLap}">
       <bpmn:incoming>Flow_04vkkwf</bpmn:incoming>
